@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Document</title>
+    <style>
+        .slider {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="canvasOut" style="position: relative;">
+        <canvas id="canvas" width="800" height="800"></canvas>
+    </div>
+</body>
+<script>
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+
+    var ary = [{
+        x1: 700,
+        y1: 100,
+        x2: 80,
+        y2: 75
+    }, {
+        x1: 80,
+        y1: 300,
+        x2: 500,
+        y2: 400
+    },
+    {
+        x1: 80,
+        y1: 300,
+        x2: 80,
+        y2: 500
+    },
+    {
+        x1: 350,
+        y1: 500,
+        x2: 400,
+        y2: 300
+    },
+    ]
+
+    draw(ary);
+
+    function draw(ary) {
+        clearCanvas(ctx, canvas)
+        var sliderData = []
+        ary.forEach(item => {
+            var {
+                x1,
+                y1,
+                x2,
+                y2
+            } = item
+            var TwoDotLength = getTwoDotLength(x1, y1, x2, y2)
+            // 因为三点确定圆，根据已有两点自己设置一个第三点
+            x3 = (x1 + x2) / 2 + TwoDotLength / 10
+            y3 = (y1 + y2) / 2 + TwoDotLength / 10
+            var {
+                Xcenter,
+                Ycenter,
+                radius
+            } = getCenter(x1, y1, x2, y2, x3, y3)
+            var start = getAngle(Xcenter, Ycenter, x1, y1)
+            var end = getAngle(Xcenter, Ycenter, x2, y2)
+            var anticlockwise = start > end ? true : false
+
+            ctx.beginPath()
+            ctx.arc(Xcenter, Ycenter, radius, start, end, anticlockwise)
+            ctx.stroke();
+            var angleOnce = 30 / radius // 因为 弧长=弧度*半径 设置弧长为30
+
+            start > end ? sliderData.push({
+                Xcenter,
+                Ycenter,
+                radius,
+                start,
+                end,
+                anticlockwise,
+                startangle: start, //滑块起始弧度
+                endangle: start - angleOnce,//滑块结束弧度
+                angleOnce,
+            }) : sliderData.push({
+                Xcenter,
+                Ycenter,
+                radius,
+                start,
+                end,
+                anticlockwise,
+                startangle: start,
+                endangle: start + angleOnce,
+                angleOnce,
+            })
+        })
+        sliderMove(sliderData)
+    }
+
+    // 绘制滑块
+    function sliderMove(sliderData) {
+        // 创建一个专门画滑块的canvas
+        var slider = document.createElement('canvas')
+        slider.width = 800
+        slider.height = 800
+        slider.className = 'slider';
+        var sliderCtx = slider.getContext('2d');
+        document.getElementById('canvasOut').appendChild(slider)
+        clearCanvas(sliderCtx, slider)
+
+        sliderCtx.strokeStyle = 'rgb(255,165,0)'
+        sliderCtx.lineWidth = 5
+
+        setInterval(drawSlider, 500);
+        function drawSlider() {
+            clearCanvas(sliderCtx, slider)
+            sliderData.forEach(item => {
+                var {
+                    Xcenter,
+                    Ycenter,
+                    radius,
+                    start,
+                    end,
+                    anticlockwise,
+                    angleOnce
+                } = item
+
+                if (start > end) {
+                    if (item.endangle <= end) {
+                        sliderCtx.beginPath()
+                        sliderCtx.arc(Xcenter, Ycenter, radius, item.startangle, end, anticlockwise)
+                        sliderCtx.stroke();
+                        item.startangle = start
+                        item.endangle = start - angleOnce
+                    } else {
+                        sliderCtx.beginPath()
+                        sliderCtx.arc(Xcenter, Ycenter, radius, item.startangle, item.endangle, anticlockwise)
+                        sliderCtx.stroke();
+                        item.startangle -= angleOnce
+                        item.endangle -= angleOnce
+                    }
+                } else {
+                    if (item.endangle >= end) {
+                        sliderCtx.beginPath()
+                        sliderCtx.arc(Xcenter, Ycenter, radius, item.startangle, end, anticlockwise)
+                        sliderCtx.stroke();
+                        item.startangle = start
+                        item.endangle = start + angleOnce
+                    } else {
+                        sliderCtx.beginPath()
+                        sliderCtx.arc(Xcenter, Ycenter, radius, item.startangle, item.endangle, anticlockwise)
+                        sliderCtx.stroke();
+                        item.startangle += angleOnce
+                        item.endangle += angleOnce
+                    }
+                }
+            })
+        }
+    }
+
+    function clearCanvas(ctx, canvas) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // 计算两点与水平线的弧度
+    function getAngle(x1, y1, x2, y2) {
+        var x = x2 - x1,
+            y = y1 - y2;
+        if (!x && !y) {
+            return 0;
+        }
+        return 2 * Math.PI - Math.atan2(y, x);
+    }
+
+    // 得出圆心和半径
+    function getCenter(x1, y1, x2, y2, x3, y3) {
+        var a, b;
+        a = (y2 - y1) / (x2 - x1);
+        b = y1 - a * x1;
+        var xMiddle = (x1 + x2) / 2;
+        var yMiddle = (y1 + y2) / 2;
+        var c, Xcenter, Ycenter;
+        if (a != 0) {
+            c = yMiddle - (-1 / a) * xMiddle;
+            Xcenter = (Math.pow(x1, 2) + Math.pow(y1, 2) - Math.pow(x3, 2) - Math.pow(y3, 2) - 2 * c * y1 + 2 * c * y3) / (2 * ((x1 - x3) - (1 / a) * (y1 - y3)));
+            Ycenter = (-1 / a) * Xcenter + c;
+        } else {
+            Xcenter = c = xMiddle;
+            Ycenter = (Math.pow(x1, 2) + Math.pow(y1, 2) - Math.pow(x3, 2) - Math.pow(y3, 2) + 2 * Xcenter * (x3 - x1)) / (2 * (y1 - y3));
+        }
+        var radius = getTwoDotLength(x1, y1, Xcenter, Ycenter)
+        return {
+            Xcenter,
+            Ycenter,
+            radius
+        }
+    }
+    // 计算两点距离
+    function getTwoDotLength(x1, y1, x2, y2) {
+        return Math.pow(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2), 0.5)
+    }
+</script>
+
+</html>
