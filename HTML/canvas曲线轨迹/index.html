@@ -111,7 +111,7 @@
         var sliderCtx = slider.getContext('2d');
         document.getElementById('canvasOut').appendChild(slider)
         clearCanvas(sliderCtx, slider)
-
+ 
         sliderCtx.strokeStyle = 'rgb(255,165,0)'
         sliderCtx.lineWidth = 5
 
@@ -176,7 +176,7 @@
         return 2 * Math.PI - Math.atan2(y, x);
     }
 
-    // 得出圆心和半径
+      // 得出圆心和半径
     function getCenter(x1, y1, x2, y2, x3, y3) {
         var a, b;
         a = (y2 - y1) / (x2 - x1);
