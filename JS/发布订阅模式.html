@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    var obj = {
+        list: {},
+        on(event, cb) {
+            (this.list[event] || (this.list[event] = [])).push(cb)
+        },
+        emit(event) {
+            this.list[event].forEach(fn => {
+                fn()
+            });
+        },
+        off(event, cb) {
+            // 没传函数，全清空
+            if (!cb) {
+                this.list[event] = []
+                return
+            }
+            fns = this.list[event]
+            // 没找到事件对应的函数，直接返回
+            if (!fns) {
+                return
+            }
+            var len = fns.length
+            for (let i = 0; i < len; i++) {
+                if (fns[i] === cb) {
+                    fns.splice(i, 1)
+                }
+            }
+        },
+        // 绑定后事件只能触发一次
+        once(event, cb) {
+            var _this = this
+            // 建一个新的函数传给on。执行cb，然后off
+            function fn() {
+                cb()
+                _this.off(event, fn)
+            }
+            this.on(event, fn)
+        }
+
+    }
+
+    obj.on('event1', function () {
+        console.log('event1触发')
+    })
+    obj.on('event2', function () {
+        console.log('event2触发')
+    })
+    obj.once('event2', function () {
+        console.log('触发once')
+    })
+    obj.emit('event1')
+    obj.emit('event2')
+    obj.emit('event2')
+
+</script>
+
+</html>
