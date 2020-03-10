@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #drag {
+            width: 100px;
+            height: 100px;
+            background-color: brown;
+        }
+        #target {
+            width: 300px;
+            height: 300px;
+            background-color: grey;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="drag" draggable="true">拖动元素</div>
+    <div id="target" class="dropzone">目标元素</div>
+</body>
+<script>
+    var dragged;
+    drag.addEventListener("drag", function (event) {
+        console.log('拖动时一直触发')
+    }, false);
+
+    drag.addEventListener("dragstart", function (event) {
+        // // 保存拖动元素的引用(ref.)
+        dragged = event.target;
+        // 使其半透明
+        console.log('拖动开始时触发一次')
+        event.target.style.opacity = 0.5;
+    }, false);
+
+    drag.addEventListener("dragend", function (event) {
+        // 重置透明度
+        console.log('拖动结束时触发一次')
+        event.target.style.opacity = "";
+    }, false);
+
+    /* 放下目标节点时触发事件 */
+    target.addEventListener("dragover", function (event) {
+        // 阻止默认动作
+        console.log('进入目标元素一直触发')
+        event.preventDefault();
+    }, false);
+
+    target.addEventListener("dragenter", function (event) {
+        console.log('每进入目标元素触发一次')
+        if (event.target.className == "dropzone") {
+            event.target.style.background = "purple";
+        }
+
+    }, false);
+
+    target.addEventListener("dragleave", function (event) {
+        // 当拖动元素离开可放置目标节点，重置其背景
+        console.log('每离开目标元素触发一次')
+        if (event.target.className == "dropzone") {
+            event.target.style.background = "";
+        }
+
+    }, false);
+
+    target.addEventListener("drop", function (event) {
+        // 阻止默认动作
+        event.preventDefault();
+        // 移动拖动的元素到所选择的放置目标节点
+        if (event.target.className == "dropzone") {
+            event.target.style.background = "";
+            // 如果想复制节点，使用下面方法复制节点再appendChild
+            // var dupNode = dragged.cloneNode(true);
+            //节点移入目标节点
+            event.target.appendChild(dragged);
+        }
+    }, false);
+</script>
+</html>

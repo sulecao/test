@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+</body>
+<script>
+    Function.prototype.myapply = function (context, arg) {
+        var context = context || window
+        context.fn = this
+        var result = context.fn(...arg)
+        delete context.fn
+        return result
+
+    }
+
+    Function.prototype.mycall = function (context, ...arg) {
+        var context = context || window
+        context.fn = this
+        var result = context.fn(...arg)
+        delete context.fn
+        return result
+    }
+
+    Function.prototype.mybind = function (context, ...arg) {
+        var context = context || window
+        var that = this
+        return function F() {
+            let newArg = [...arguments]
+            // 判断是否被当做构造函数使用
+            if (this instanceof F) {
+                return that.apply(this, arg.concat(newArg))
+            }
+            return that.apply(context, arg.concat(newArg))
+        }
+    }
+
+    var a = 1;
+    var obj = {
+        a: 2
+    }
+    function test(a, b) {
+        console.log(this.a + a + b)
+    }
+    function test2(a, b) {
+        this.a = a
+        this.b = b
+    }
+    test(3, 4)
+    test.myapply(null, [3, 4])
+    test.myapply(obj, [3, 4])
+    test.mycall(null, 3, 4)
+    test.mycall(obj, 3, 4)
+    var fn = test.mybind(obj, 3)
+    fn(4)
+    var fn2 = test2.mybind(obj, 3)
+    console.log(new fn2(4)) 
+</script>
+
+</html>
