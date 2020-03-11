@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -20,6 +20,9 @@
             top: 50%;
             transform: translate(-50%, -50%);
         }
+        .h{
+            display:none ;
+        }
     </style>
 </head>
 
@@ -38,12 +41,17 @@
         dragged = event.target;
         // 使其半透明
         console.log('拖动开始时触发一次')
+        // 拖动时使原元素隐藏
+        // setTimeout(()=>{
+        //     dragged.className = 'h'
+        // },0)
         event.target.style.opacity = 0.5;
     }, false);
 
     drag.addEventListener("dragend", function (event) {
         // 重置透明度
         console.log('拖动结束时触发一次')
+        // dragged.className = ''
         event.target.style.opacity = "";
     }, false);
 

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+</body>
+<script>
+    // 节流
+    // 高频事件触发，但在 n 秒内只会执行一次。
+    // 在类似监听页面元素滚动事件的时候会用到。因为滚动事件，是一个高频触发的事件。
+    function throttle(fn) {
+        var flag = true
+        return function () {
+            if (flag) {
+                flag = false
+                setTimeout(() => {
+                    flag = true
+                    fn.apply(this, arguments);
+                }, 1000)
+            }
+        }
+    }
+
+    // 防抖
+    // 触发高频事件一次后 n 秒后函数执行，如果 n 秒内高频事件再次被触发，则函数不会执行，重新计算时间 n秒 ；
+    // 输入框只有等用户输入完毕后，才检查格式是否正确。
+    function debounce(fn) {
+        var flag = null
+        return function () {
+            clearTimeout(flag)
+            flag = setTimeout(fn.apply(this, arguments), 1000)
+        }
+    }
+
+    // 测试
+    var a = 3
+    var t = {
+        a: 1,
+        b() {
+            console.log(this.a)
+        }
+    }
+    var t1 = throttle(t.b)
+    var t2 = debounce(t.b)
+    t1()
+    t2.bind(t)()
+</script>
+
+</html>
