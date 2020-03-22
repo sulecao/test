@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>顶部导航固定</title>
+    <style>
+        #top {
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            background-color: pink;
+        }
+
+        #nav {
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            background-color: brown;
+            /* 使用sticky 属性 */
+            /* position: sticky;
+            top: -1px; */
+        }
+
+        #main {
+            width: 100%;
+            height: 5000px;
+            text-align: center;
+            background-color: gray;
+        }
+
+        .fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="top">
+        头部信息
+    </div>
+    <div id="nav">
+        导航栏
+    </div>
+    <div id="main">
+        内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区内容区
+    </div>
+</body>
+
+</html>
+<script>
+    // 两种方案，一：是用sticky属性，二：计算nav滚动到顶部后 增加fixed属性
+    var navTop = document.getElementById('nav').offsetTop //得到导航栏距离顶部的距离
+    document.addEventListener('scroll', function () {
+        if (window.pageYOffset >= navTop) {
+            nav.className = "fixed";
+        } else {
+            nav.className = "";
+        }
+    })
+</script>

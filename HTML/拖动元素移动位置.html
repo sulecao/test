@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        #box {
+            width: 300px;
+            height: 100px;
+            position: absolute;
+            border: 1px solid black;
+            top: 0;
+            left: 0;
+        }
+
+        #drop {
+            width: 100%;
+            height: 25px;
+            background-color: pink;
+            line-height: 25px;
+            cursor: move;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box">
+        <div id="drop">拖拽区域</div>
+        <div>内容区域</div>
+    </div>
+</body>
+
+</html>
+<script>
+    var box = document.getElementById("box");
+    var drop = document.getElementById("drop");
+
+    drop.addEventListener('mousedown', function (event) {
+        var x = event.clientX - box.offsetLeft;// 鼠标坐标 减去 相对于外围盒子的宽度 即是 外围盒子相对于浏览器内容区的宽度
+        var y = event.clientY - box.offsetTop;
+        function mousemove(event) {
+            box.style.left = event.clientX - x + "px";
+            box.style.top = event.clientY - y + "px";
+        }
+
+        document.addEventListener('mousemove', mousemove)
+
+        document.addEventListener('mouseup', function (event) {
+            document.removeEventListener('mousemove', mousemove)
+            document.removeEventListener('mouseup',arguments.callee)
+        })
+    })
+
+
+
+
+</script>

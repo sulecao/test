@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #app {
+            width: 300px;
+            height: 300px;
+            background-color: aqua;
+            position: relative;
+        }
+
+        #drag {
+            width: 30px;
+            height: 30px;
+            background-color: brown;
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            cursor: se-resize;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div id="drag"></div>
+    </div>
+</body>
+<script>
+    var app = document.getElementById('app')
+    var drag = document.getElementById('drag')
+    var x, y
+
+    function move(e) {
+        app.style.width = (e.clientX - x) + 300 + 'px'
+        app.style.height = (e.clientY - y) + 300 + 'px'
+    }
+
+    drag.addEventListener('mousedown', function (e) {
+        x = e.clientX
+        y = e.clientY
+        document.addEventListener('mousemove', move)
+        function remove() {
+            document.removeEventListener('mousemove', move)
+            document.removeEventListener('mouseup', remove)
+        }
+        document.addEventListener('mouseup', remove)
+    })
+</script>
+
+</html>
