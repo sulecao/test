@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>轮播图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        ul,
+        ol {
+            list-style: none;
+        }
+
+        #carousel {
+            width: 500px;
+            height: 170px;
+            border: 1px solid #ccc;
+            margin: 100px auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #banner {
+            display: flex;
+            position: absolute;
+            left: 0px;
+            transition: left 0.5s ease 0s;
+        }
+
+        #banner li {
+            margin: 0px 5px;
+            width: 490px;
+            height: 170px;
+        }
+
+        #tip {
+            display: flex;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 10px;
+
+        }
+
+        #tip li {
+            width: 20px;
+            margin: 0 10px;
+            background-color: #ccc;
+            text-align: center;
+        }
+
+        #tip li:hover {
+            background-color: pink;
+        }
+
+        #tip .cur {
+            background-color: pink;
+        }
+
+        #leftBtn {
+            position: absolute;
+            top: 50%;
+            left: 5px;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 20px solid transparent;
+            border-right: 20px solid #ccc;
+            border-bottom: 20px solid transparent;
+        }
+
+        #leftBtn:hover {
+            border-right: 20px solid pink;
+        }
+
+        #rightBtn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 20px solid transparent;
+            border-left: 20px solid #ccc;
+            border-bottom: 20px solid transparent;
+        }
+
+        #rightBtn:hover {
+            border-left: 20px solid pink;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="carousel">
+        <ul id="banner">
+            <li style="background-color: aqua;">1</li>
+            <li style="background-color: royalblue;">2</li>
+            <li style="background-color: goldenrod;">3</li>
+            <li style="background-color: grey;">4</li>
+            <li style="background-color: yellowgreen;">5</li>
+        </ul>
+        <ul id="tip">
+            <li class="cur">1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+            <li>5</li>
+        </ul>
+        <div id="leftBtn"></div>
+        <div id="rightBtn"></div>
+    </div>
+    <script>
+        let carousel = document.getElementById('carousel');
+        let banner = carousel.children[0]
+        let tipList = carousel.children[1].children;
+        let curLi = 0;
+        for (let i = 0; i < tipList.length; i++) {
+            tipList[i].addEventListener('mouseover', function () {
+                clear()
+                curLi = i;
+                setCur(curLi)
+            })
+        }
+
+        let leftBtn = document.getElementById('leftBtn');
+        leftBtn.addEventListener('click', function () {
+            if (curLi <= 0) {
+                return
+            } else {
+                tipList[curLi--].className = ''
+                setCur(curLi)
+            }
+        })
+
+        let rightBtn = document.getElementById('rightBtn');
+        rightBtn.addEventListener('click', function () {
+            if (curLi >= 5) {
+                return
+            } else {
+                tipList[curLi++].className = ''
+                setCur(curLi)
+            }
+        })
+
+        function clear() {
+            for (let i = 0; i < 5; i++) {
+                tipList[i].className = ''
+            }
+        }
+        function setCur(curLi) {
+            banner.style.left = -curLi * 500 + "px";
+            tipList[curLi].className = 'cur'
+        }
+        // 自动播放相关
+        let intervalTime = null
+        function setAuto() {
+            intervalTime = setInterval(function () {
+                if (curLi < 4) {
+                    tipList[curLi++].className = ''
+                    setCur(curLi)
+                } else {
+                    tipList[curLi].className = ''
+                    curLi = 0
+                    setCur(curLi)
+                }
+            }, 1000)
+        }
+        setAuto()
+        carousel.addEventListener('mouseenter', function () {
+            clearInterval(intervalTime)
+        })
+        carousel.addEventListener('mouseleave', function () {
+            setAuto()
+        })
+    </script>
+</body>
+
+</html>
