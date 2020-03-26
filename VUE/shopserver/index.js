@@ -8,9 +8,23 @@ app.all('*', function(req, res, next) {
     next();
 });
 
+
+
+
 app.get("/",function(req,res){
     res.send(`<h1>主11页</h1>`);
 });
+
+
+app.get('/public/images/*', function (req, res) {
+    res.sendFile( __dirname + "/" + req.url );
+})
+  
+app.get('/public/html/index.html', function (req, res) {
+   res.sendFile( __dirname + "/" + "/public/html/index.html" );
+   console.log("Request for " + req.url + " received.");
+})
+
 app.get("/login",function(req,res){
     res.send('登录页面');
 });

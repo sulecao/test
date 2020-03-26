@@ -8,7 +8,8 @@ import 'vant/lib/index.css';
 
 Vue.use(Vant);
 Vue.config.productionTip = false;
-
+// 事件总线
+Vue.prototype.$bus = new Vue();
 new Vue({
   router,
   store,

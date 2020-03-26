@@ -4,7 +4,11 @@
   <nav-bar>
     <div class="hmoe-nav" slot="center">首页</div>
   </nav-bar>
- <div class="one-good" v-for="(item,index) in goodslist" :key="index" @click="detail(index)">
+  <!-- .native 监听组件根元素事件 -->
+  <!-- ref重复怎么办？ -->
+<return-top ></return-top>
+
+ <div class="one-good" v-for="(item,index) in goodslist" :key="index" @click="detail(item)">
      {{item.name}}
      {{item.price}}
  </div>
@@ -14,50 +18,39 @@
 <script>
 
 import NavBar from 'components/NavBar'
-import {getHomeMultidata} from 'network/home.js'
+import ReturnTop from 'components/content/ReturnTop'
+// import {getHomeMultidata} from 'network/home.js'
 export default {
   name: "Home",
   components: {
-    NavBar
+    NavBar,ReturnTop
   },
   data(){
     return{
-      goodslist:[{
-        id:1,
-        name: '商品1',
-        price:98
-      },
-      {
-        id:2,
-        name: '商品2',
-        price:198
-      },{
-        id:3,
-        name: '商品3',
-        price:298
-      },{
-        id:4,
-        name: '商品4',
-        price:398
-      },{
-        id:5,
-        name: '商品5',
-        price:498
-      }
-      
-      
-      ]
+      goodslist:[]
     }
   },
   methods:{
-    detail(){
-
+    detail(item){
+      this.$router.push(`detail/${item.id}`)
     }
   },
   mounted(){
-getHomeMultidata().then(res=>{
-  console.log(res)
-})
+    console.log(this.$bus);
+    
+
+    for(let i =1;i<100;i++){
+    this.goodslist.push({
+        id:i,
+        name: '商品'+i,
+        price: Math.floor(Math.random()*100)
+      })
+    }
+    
+    
+// getHomeMultidata().then(res=>{
+//   console.log(res)
+// })
   }
 };
 </script>
