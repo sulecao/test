@@ -1,5 +1,7 @@
 <template>
-  <div class="Detail">Detail</div>
+  <div class="Detail">
+    导航栏 返回
+    Detail</div>
 </template>
 
 <script>
