@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <script src="./index.js"></script>
+</head>
+
+<body>
+    <div id="main" style="width: 400px;height:400px;"></div>
+    <div id="main2" style="position: relative;  width: 400px;height:400px;"></div>
+    <script type="text/javascript">
+        let data = [
+            {
+                "id": "1",
+                'name': '星期一',
+                "num": "90"
+            }, {
+                "id": "2",
+                'name': '星期二',
+                "num": "80"
+            }, {
+                "id": "3",
+                'name': '星期三',
+                "num": "70"
+            }, {
+                "id": "4",
+                'name': '星期四',
+                "num": "60"
+            }, {
+                "id": "5",
+                'name': '星期五',
+                "num": "50"
+            }
+        ]
+        //  柱状图   
+        let myChart = new Ecanvas(document.getElementById('main'));
+        let option = [{
+            type: 'line',
+            data: [50, 350, 350, 350],
+        },
+        {
+            type: 'line',
+            data: [50, 350, 50, 50],
+        },
+        ]
+        const padding = 50
+        const chartWidth = 400 - padding * 2
+        const chartHeight = 400 - padding * 2
+        const OX = padding
+        const OY = 400 - padding
+        const XSplitWidth = chartWidth / data.length
+        const YSplitWidth = chartHeight / data.length
+        const barWidthpercent = 0.5
+        const barWidth = barWidthpercent * XSplitWidth
+        const XAxisTextY = OY + 30
+        const YAxisTextX = OX - 30
+        data.forEach((item, index, arry) => {
+            let centerX = 50 + XSplitWidth * index + XSplitWidth / 2
+            let height = (item.num / 100) * chartHeight
+            let barstartX = centerX - barWidth / 2
+            let barstartY = OY - height
+            let lineY = 350 - 300 / 5 * index
+            let ary = [barstartX, barstartY, barWidth, height]
+            let Ytext = 0 + 20 * (index + 1)
+            let YtextY = OY - YSplitWidth * (index + 1)
+            option.push({
+                type: 'fillRect',
+                data: ary,
+                fillStyle: "rgb(100,0,0)",
+                hoverStyle: "rgb(200,0,0)",
+                hoverContent: `${item.name}<br>${item.num}`,
+
+                event: {
+                    click(e) {
+                        console.log(`${item.name}click`)
+                        // console.log(e)
+                    },
+                    hover(e) {
+                        console.log(`${item.name}hover`)
+                        // console.log(e)
+                    }
+                }
+            }, {
+                type: 'fillText',
+                data: [item.name, centerX, XAxisTextY],
+                fontStyle: "16px serif",
+                textAlign: 'center'
+            }, {
+                type: 'fillText',
+                data: [Ytext, 25, YtextY],
+                fontStyle: "16px serif",
+                textAlign: 'center'
+            })
+        })
+        option.push({
+            type: 'fillText',
+            data: [0, YAxisTextX, OY],
+            fontStyle: "16px serif",
+            textAlign: 'center'
+        })
+        myChart.setOption(option);
+
+
+
+        // 扇形图
+        let myChart2 = new Ecanvas(document.getElementById('main2'));
+        let option2 = []
+        let total = data.reduce((pre, cur) => pre + parseInt(cur.num), 0)
+        let startAngle = 0
+        let endAngle = 0
+        let fillStyle = ["rgba(78, 175, 245, 1)", "rgba(126, 130, 230, 1)", "rgba(100,0,0,1)", "rgba(200,0,0,1)",
+            "rgba(100,100,0,1)", "rgba(50,50,0,1)"
+        ]
+        data.forEach((item, index, arry) => {
+            startAngle = endAngle
+            endAngle = startAngle + parseInt(item.num) / total * Math.PI * 2
+            option2.push({
+                type: 'fillCircel',
+                data: [200, 200, 50, startAngle, endAngle, false],
+                fillStyle: fillStyle[index],
+                hoverContent: `${item.name}<br>${item.num}`,
+                event: {
+                    click(e) {
+                        console.log(`${item.name}click`)
+                    },
+                    hover(e) {
+                        console.log(`${item.name}hover`)
+                    }
+                }
+            })
+        })
+        myChart2.setOption(option2);
+    </script>
+</body>
+
+</html>
